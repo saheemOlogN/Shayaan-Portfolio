@@ -371,7 +371,7 @@ const BlurText = ({
 
   return (
     <MotionConfig reducedMotion="user">
-      <p
+      <span
         ref={ref}
         className={className}
         style={{ display: 'flex', flexWrap: 'wrap', color, cursor: trigger === 'click' ? 'pointer' : undefined }}
@@ -389,9 +389,10 @@ const BlurText = ({
             {indices.map(renderPiece)}
           </span>
         ))}
-      </p>
+      </span>
     </MotionConfig>
   );
 };
 
 export default BlurText;
+
