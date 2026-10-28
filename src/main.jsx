@@ -1,28 +1,116 @@
-import React, { useState, useEffect, lazy, Suspense } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { motion, MotionConfig, useReducedMotion } from 'motion/react';
-import { ArrowUpRight, ArrowDown, Download, Menu, X, Plus, Minus, Camera, ArrowRight } from 'lucide-react';
-import BlurText from './components/BlurText';
+import { motion, MotionConfig, useReducedMotion, useMotionValue, useSpring } from 'motion/react';
+import { ArrowUpRight, ArrowDown, Download, Menu, X, Plus, Minus } from 'lucide-react';
+import ProfileCard from './components/ProfileCard';
+import GradualBlur from './components/GradualBlur';
+import VariableProximity from './components/VariableProximity';
+import ScrollReveal from './components/ScrollReveal';
+import portrait from '../image.png';
 import './style.css';
-const Aurora = lazy(() => import('./components/Aurora'));
-// Add image paths here after placing your photos in public/images/.
-const images = { portrait: '', nyrox: '', addvinci: '', timeshade: '' };
-const ventures = [
- {name:'Nyrox', type:'WEB DEVELOPMENT · AI AUTOMATION', date:'2026 — PRESENT', tag:'Co-founder', num:'01', stat:'5+', metric:'business clients', desc:'Helping businesses work smarter with websites and AI automation. Owning the journey from a first cold outreach to the final delivery.', detail:'Co-founded a web and AI automation agency serving international clients. Manage prospecting, pitching, closing, and delivery across the full sales cycle.', theme:'nyrox', image:'nyrox.webp'},
- {name:'AddVinci', type:'WEB3 · CONTENT & DESIGN', date:'2023 — 2025', tag:'Founder', num:'02', stat:'₹30L+', metric:'revenue generated', desc:'Built a content and design agency from the ground up. Turning ideas into campaigns for a growing roster of Web3 brands.', detail:'Scaled to 40+ clients. Managed the complete Twitter account of a client with 100k+ followers and delivered campaigns from strategy through creative execution.', theme:'addvinci', image:'addvinci.webp'},
- {name:'Time ShadeX', type:'E-COMMERCE · BRAND BUILDING', date:'2023', tag:'Founder', num:'03', stat:'₹1L+', metric:'store revenue', desc:'An independent gothic watch venture. A hands-on introduction to sourcing, commerce, and building a brand from zero.', detail:'Generated 25+ orders and ₹1L+ revenue. Coordinated directly with Chinese vendors on product sourcing and managed marketing operations from launch.', theme:'timeshade', image:'timeshadex.webp'}
-];
-const experience=[['Jul 2026 — Present','Co-Founder','Nyrox','Building web and AI automation solutions. Managing outreach, sales, and end-to-end client delivery.'],['Apr — Jun 2026',"Intern, Founder’s Office",'Ubiqedge','Supported forecasting and allocation for a ₹14 Cr+ annual budget. Reached 300+ businesses, created marketing content, and represented the company at ImagiNxt 2026.'],['Oct 2023 — Nov 2025','Founder','AddVinci','Built a Web3 content and design agency serving 40+ clients, generating ₹30L+ in revenue.'],['May — Aug 2023','Founder','Time ShadeX','Launched a gothic watch store, managing international sourcing and marketing to drive 25+ orders.']];
-function Reveal({children,className='',delay=0}){const reduce=useReducedMotion(); return <motion.div className={className} initial={reduce?false:{opacity:0,y:26}} whileInView={{opacity:1,y:0}} viewport={{once:true,amount:0.12}} transition={{duration:.7,delay,ease:[.22,1,.36,1]}}>{children}</motion.div>}
-function ImageSlot({src,alt,className='',children}){const [failed,setFailed]=useState(!src);return <div className={className}>{!failed&&<img src={src} alt={alt} loading="lazy" onError={()=>setFailed(true)}/>} {failed&&children}</div>}
-function Venture({item}){const [open,setOpen]=useState(false);return <Reveal className="venture"><ImageSlot src={images[item.theme]} alt={item.name+' project image'} className={'project-art '+item.theme}><span className="art-label">{item.type}</span><div className="project-mark">{item.name==='Nyrox'?<>n<span>↗</span></>:item.name==='AddVinci'?<>av<span>✳</span></>:<>t<span>×</span></>}</div><span className="image-hint"><Camera size={13}/> PROJECT IMAGE SPACE</span><span className="art-number">{item.num}</span></ImageSlot><div className="project-meta"><span>{item.tag}</span><span>{item.date}</span></div><div className="project-title"><h3>{item.name}</h3><span>{item.stat}<small>{item.metric}</small></span></div><p>{item.desc}</p><button className="text-link" aria-expanded={open} aria-controls={'details-'+item.num} onClick={()=>setOpen(!open)}>{open?'Less about the venture':'Inside the venture'}{open?<Minus size={17}/>:<Plus size={17}/>}</button>{open&&<motion.p id={'details-'+item.num} initial={{opacity:0,y:5}} animate={{opacity:1,y:0}} className="project-detail">{item.detail}</motion.p>}</Reveal>}
-function App(){const [menu,setMenu]=useState(false);const [active,setActive]=useState('');const reduced=useReducedMotion();useEffect(()=>{const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)setActive(e.target.id)}),{rootMargin:'-15% 0px -60% 0px'});document.querySelectorAll('section[id]').forEach(s=>observer.observe(s));return()=>observer.disconnect()},[]);return <MotionConfig reducedMotion="user"><a className="skip" href="#main">Skip to content</a><header className="nav glass"><a className="wordmark" href="#" aria-label="Shayaan home">shayaan<span>®</span></a><nav className={menu?'links is-open':'links'} aria-label="Main navigation">{['About','Ventures','Experience'].map(x=><a key={x} href={'#'+x.toLowerCase()} className={active===x.toLowerCase()?'active':''} onClick={()=>setMenu(false)}>{x}</a>)}</nav><a className="nav-contact" href="#contact">Let’s talk <ArrowUpRight size={16}/></a><button className="menu-toggle" onClick={()=>setMenu(!menu)} aria-label={menu?'Close menu':'Open menu'} aria-expanded={menu}>{menu?<X/>:<Menu/>}</button></header>
-<main id="main"><section className="hero"><div className="aurora" aria-hidden="true">{!reduced&&<Suspense fallback={null}><Aurora colorStops={['#a4b494','#cad797','#a8b9aa']} lightMode speed={.35} amplitude={.7} opacity={.6} dpr={1} mouseInteraction={false}/></Suspense>}</div><div className="hero-top"><span className="eyebrow"><i/> ENTREPRENEUR. OPERATOR. EXPLORER.</span><span className="location">BASED IN MUMBAI, INDIA ↗</span></div><h1><span className="hero-line">{reduced ? "Building ideas." : <BlurText text="Building ideas." delay={100} direction="bottom" distance={20}/>}</span><span className="hero-line second">Creating <em>impact.</em><span className="asterisk" aria-hidden="true">✳</span></span></h1><div className="hero-bottom"><div><p className="intro">Hey, I’m <strong>Shayaan Nakhwa.</strong></p><p className="hero-description">I build ventures at the intersection of<br className="desktop"/> growth, creativity, and emerging technology.</p><div className="hero-actions"><a className="button dark" href="#ventures">Explore my work <ArrowUpRight size={19}/></a><a className="resume-link" href="/Shayaan_Nakhwa_Resume.pdf" download>Download résumé <Download size={16}/></a></div></div><div className="hero-note glass"><span className="note-icon">↗</span><p>From a first idea<br/>to the next <em>big thing.</em></p><span className="mini-label">ALWAYS BUILDING. ALWAYS LEARNING.</span></div></div><div className="hero-footer"><a href="#about"><ArrowDown size={15}/> SCROLL TO EXPLORE</a><span>BUSINESS MIND. BUILDER’S INSTINCT.</span></div></section>
-<div className="metric-strip"><div><strong>40+</strong><span>Clients served at AddVinci</span></div><div><strong>₹30L+</strong><span>Revenue built at AddVinci</span></div><div><strong>3</strong><span>Ventures launched</span></div><div><strong>2027</strong><span>NMIMS graduating class</span></div></div>
-<section id="about" className="section about"><Reveal className="portrait-wrap"><ImageSlot src={images.portrait} alt="Portrait of Shayaan Nakhwa" className="portrait"><div className="portrait-monogram">sn.</div><span className="portrait-placeholder"><Camera size={17}/> YOUR PORTRAIT HERE</span></ImageSlot><div className="portrait-caption glass"><span>Shayaan Nakhwa</span><small>MUMBAI, INDIA · NMIMS</small></div><span className="portrait-stamp">A WORK IN PROGRESS.<br/>BY DESIGN.</span></Reveal><Reveal className="about-copy"><span className="eyebrow">01 / A LITTLE ABOUT ME</span><h2>Curiosity is the start.<br/><em>Execution is the difference.</em></h2><p>I’m a BBA student at NMIMS, ASMSOC, with a habit of turning curiosity into something real.</p><p>From launching an e-commerce store to scaling a Web3 agency and now co-founding Nyrox, I’ve learned by building. My work connects sales, content, and operations—with a focus on thoughtful decisions and end-to-end execution.</p><p>Outside work? Fitness, digital culture, crypto markets, and a good story told through a camera.</p><a className="text-link" href="https://www.linkedin.com/in/shayaannakhwa" target="_blank" rel="noreferrer">More on LinkedIn <ArrowUpRight size={17}/></a></Reveal></section>
-<section id="ventures" className="section ventures"><Reveal className="section-heading"><div><span className="eyebrow">02 / SELECTED VENTURES</span><h2>Ideas, <em>in motion.</em></h2></div><p>A few things I’ve built.<br/>And a lot I’ve learned along the way.</p></Reveal><div className="venture-grid">{ventures.map(v=><Venture key={v.name} item={v}/>)}</div></section>
-<section id="experience" className="section experience"><Reveal className="experience-intro"><span className="eyebrow">03 / THE JOURNEY</span><h2>Learning by<br/><em>doing.</em></h2><p>Real clients. Real decisions.<br/>Experience beyond the classroom.</p><a href="/Shayaan_Nakhwa_Resume.pdf" download className="text-link">The full résumé <Download size={16}/></a></Reveal><div className="timeline">{experience.map(([date,role,company,desc],i)=><Reveal key={company} className="timeline-item" delay={i*.05}><span className="timeline-date">{date}</span><h3>{role}<span>{company}</span></h3><p>{desc}</p></Reveal>)}</div></section>
-<section className="section capabilities"><Reveal className="section-heading"><div><span className="eyebrow">04 / WHAT I BRING</span><h2>Many interests.<br/><em>A connected toolkit.</em></h2></div><p>Strategy meets hands-on execution.</p></Reveal><div className="skill-grid">{[['01','Sales & growth','Sales & outreach · Digital marketing · Customer relationships · Revenue operations',['HubSpot','Meta Ads','Google Ads','Mailchimp']],['02','Content & creativity','Content creation · Graphic design · Video editing · Cinematography',['Canva','CapCut','DaVinci Resolve','Higgsfield']],['03','Data & automation','Analytics & reporting · AI workflows · Crypto markets & trading',['Excel','Power BI','n8n','ChatGPT','Claude','Gemini','TradingView']]].map(([n,title,copy,tags])=><Reveal className="skill-card glass" key={title}><span className="mini-label">{n} / EXPERTISE</span><h3>{title}</h3><p>{copy}</p><div className="tags">{tags.map(t=><span key={t}>{t}</span>)}</div></Reveal>)}</div><div className="credentials"><Reveal><span className="eyebrow">EDUCATION & CERTIFICATIONS</span><h3>BBA · NMIMS, ASMSOC</h3><p>Class of 2027</p><ul><li>Inbound Sales · HubSpot Academy, 2026</li><li>Revenue Operations · HubSpot Academy, 2026</li><li>Fundamentals of Digital Marketing · Google, 2026</li></ul></Reveal><Reveal><span className="eyebrow">BEYOND THE DESK</span><h3>Leadership & recognition</h3><p>Senior Member, Games & Sports · Vaayu, 2025–2026</p><ul><li>Sponsor outreach and event logistics for NMIMS’ national-level fest</li><li>Best Speaker · Model United Nations</li><li>Winner · Web3 Graphic Designing Competition</li><li>Completed Atal Incubation Programme</li><li>Certificate of Excellence · EUMIND Interactive Event</li></ul></Reveal></div></section>
-<section id="contact" className="contact"><Reveal><span className="eyebrow"><i/> GOOD THINGS START WITH A CONVERSATION</span><h2>Have an idea?<br/>Let’s make it <em>happen.</em></h2><a className="contact-email" href="mailto:shayaan.nakhwa9@gmail.com">shayaan.nakhwa9@gmail.com <ArrowUpRight/></a><div className="contact-links"><a href="https://www.linkedin.com/in/shayaannakhwa" target="_blank" rel="noreferrer">LinkedIn <ArrowUpRight size={16}/></a><a href="tel:+919136598643">+91 91365 98643 <ArrowUpRight size={16}/></a><a href="/Shayaan_Nakhwa_Resume.pdf" download>Résumé <Download size={16}/></a></div></Reveal><span className="contact-star" aria-hidden="true">✳</span></section></main><footer><a className="wordmark" href="#">shayaan<span>®</span></a><span>© {new Date().getFullYear()} Shayaan Nakhwa</span><a href="#">BACK TO TOP ↑</a></footer></MotionConfig>}
-createRoot(document.getElementById('root')).render(<React.StrictMode><App/></React.StrictMode>);
 
+const ventures = [
+  { name: 'Nyrox', field: 'Web development & AI automation', period: '2026 — Present', role: 'Co-founder', result: '5+', metric: 'business clients', description: 'Websites and AI workflows that help businesses work smarter.', detail: 'Co-founded an agency serving international clients. I manage the full journey from prospecting and pitching to closing and final delivery.' },
+  { name: 'AddVinci', field: 'Web3 content & design', period: '2023 — 2025', role: 'Founder', result: '₹30L+', metric: 'revenue generated', description: 'Built a content and design agency serving more than 40 Web3 clients.', detail: 'Led strategy, creative execution, and client relationships. Managed the complete Twitter account of a client with over 100,000 followers.' },
+  { name: 'Time ShadeX', field: 'E-commerce', period: '2023', role: 'Founder', result: '₹1L+', metric: 'store revenue', description: 'An independent watch brand, built from sourcing through launch.', detail: 'Worked directly with Chinese vendors on product sourcing, built the store, and managed marketing to generate more than 25 orders.' }
+];
+const experience = [
+  ['Jul 2026 — Present', 'Co-founder', 'Nyrox', 'Web and AI automation. Outreach, sales, and end-to-end delivery.'],
+  ['Apr — Jun 2026', 'Intern, Founder’s Office', 'Ubiqedge', 'Supported forecasting for a ₹14 Cr+ annual budget and reached 300+ businesses.'],
+  ['Oct 2023 — Nov 2025', 'Founder', 'AddVinci', 'Scaled a Web3 content and design agency to 40+ clients.'],
+  ['May — Aug 2023', 'Founder', 'Time ShadeX', 'International sourcing, e-commerce operations, and marketing.']
+];
+function Reveal({ children, className = '', delay = 0 }) {
+  const reduced = useReducedMotion();
+  return <motion.div className={className} initial={reduced ? false : { opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .1 }} transition={{ duration: .7, delay, ease: [.22, 1, .36, 1] }}>{children}</motion.div>;
+}
+function Cursor() {
+  const reduced = useReducedMotion();
+  const x = useMotionValue(-100), y = useMotionValue(-100);
+  const sx = useSpring(x, { stiffness: 180, damping: 25 }), sy = useSpring(y, { stiffness: 180, damping: 25 });
+  const [visible, setVisible] = useState(false), [hover, setHover] = useState(false);
+  useEffect(() => {
+    if (reduced || !matchMedia('(pointer:fine)').matches) return;
+    const move = e => { x.set(e.clientX); y.set(e.clientY); setVisible(true); setHover(!!e.target.closest('a,button')); };
+    const leave = () => setVisible(false);
+    window.addEventListener('pointermove', move);
+    document.documentElement.addEventListener('pointerleave', leave);
+    window.addEventListener('blur', leave);
+    return () => { window.removeEventListener('pointermove', move); document.documentElement.removeEventListener('pointerleave', leave); window.removeEventListener('blur', leave); };
+  }, [reduced, x, y]);
+  if (reduced) return null;
+  return <motion.div aria-hidden="true" className="cursor" style={{ left: sx, top: sy }} animate={{ opacity: visible ? 1 : 0, width: hover ? 48 : 28, height: hover ? 48 : 28 }} transition={{ duration: .25 }} />;
+}
+function Venture({ item, index }) {
+  const [open, setOpen] = useState(false);
+  return <Reveal className="venture">
+    <button className="venture-summary" onClick={() => setOpen(!open)} aria-expanded={open} aria-controls={'venture-' + index}>
+      <span className="row-number">0{index + 1}</span>
+      <span className="venture-name"><span className="small-label">{item.field}</span><h3>{item.name}</h3><span className="venture-description">{item.description}</span></span>
+      <span className="venture-result">{item.result}<small>{item.metric}</small></span>
+      <span className="expand-icon">{open ? <Minus size={20}/> : <Plus size={20}/>}</span>
+    </button>
+    <div id={'venture-' + index} hidden={!open} className="venture-detail"><p>{item.detail}</p><span className="small-label">{item.role} · {item.period}</span></div>
+  </Reveal>;
+}
+function App() {
+  const heroRef = useRef(null), [menu, setMenu] = useState(false), [active, setActive] = useState('');
+  const reduced = useReducedMotion();
+  useEffect(() => {
+    const observer = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) setActive(e.target.id); }), { rootMargin: '-15% 0px -55% 0px' });
+    document.querySelectorAll('section[id]').forEach(el => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+  useEffect(() => {
+    const close = e => { if (e.key === 'Escape') setMenu(false); };
+    window.addEventListener('keydown', close);
+    return () => window.removeEventListener('keydown', close);
+  }, []);
+  return <MotionConfig reducedMotion="user">
+    <a className="skip" href="#main">Skip to content</a><Cursor/>
+    <GradualBlur target="page" position="top" height="7rem" strength={.7} layers={5} tint="#000" zIndex={20}/>
+    <header className="nav glass">
+      <a className="wordmark" href="#home" aria-label="Shayaan home" onClick={() => setMenu(false)}>shayaan<span>.</span></a>
+      <nav id="navigation" className={menu ? 'nav-links open' : 'nav-links'} aria-label="Main navigation">
+        {['About', 'Ventures', 'Experience'].map(label => <a key={label} className={active === label.toLowerCase() ? 'active' : ''} href={'#' + label.toLowerCase()} onClick={() => setMenu(false)}>{label}</a>)}
+      </nav>
+      <a className="nav-contact" href="#contact" onClick={() => setMenu(false)}>Let’s talk <ArrowUpRight size={15}/></a>
+      <button className="menu-toggle" aria-label={menu ? 'Close menu' : 'Open menu'} aria-controls="navigation" aria-expanded={menu} onClick={() => setMenu(!menu)}>{menu ? <X size={20}/> : <Menu size={20}/>}</button>
+    </header>
+    <main id="main">
+      <section id="home" className="hero container" ref={heroRef}>
+        <Reveal className="hero-copy">
+          <p className="eyebrow">SHAYAAN NAKHWA <span>—</span> ENTREPRENEUR & OPERATOR</p>
+          <h1>{reduced ? <>Ideas into<br/>business.</> : <><VariableProximity label="Ideas into" containerRef={heroRef} fromFontVariationSettings="'wght' 450" toFontVariationSettings="'wght' 720" radius={160}/><br/><VariableProximity label="business." containerRef={heroRef} fromFontVariationSettings="'wght' 450" toFontVariationSettings="'wght' 720" radius={160}/></>}</h1>
+          <p className="hero-description">I build ventures at the intersection of<br className="desktop"/> growth, creativity, and emerging technology.</p>
+          <div className="hero-actions"><a className="button" href="#ventures">Selected ventures <ArrowUpRight size={18}/></a><a className="quiet-link" href="/Shayaan_Nakhwa_Resume.pdf" download>Résumé <Download size={16}/></a></div>
+        </Reveal>
+        <Reveal className="hero-portrait" delay={.15}>
+          <ProfileCard avatarUrl={portrait} name="Shayaan Nakhwa" title="Entrepreneur & operator" handle="" status="Mumbai, India" statusColor="#c9c9c9" contactText="Connect" onContactClick={() => { window.location.hash = 'contact'; }} backdropColor="#171717" holo={0} glare={.16} tiltStrength={5} parallax={2} intro={false} enableTilt={!reduced} radius={14}/>
+        </Reveal>
+        <div className="hero-foot"><a href="#about"><ArrowDown size={14}/> A little more about me</a><span>Currently building Nyrox <span className="status-dot"/></span></div>
+      </section>
+      <section id="about" className="section container about">
+        <Reveal><p className="eyebrow">01 / ABOUT</p></Reveal>
+        <div><ScrollReveal baseRotation={0} baseOpacity={.25} blurStrength={3} wordAnimationEnd="bottom 75%" textClassName="statement">Curiosity starts it. Execution makes it real.</ScrollReveal>
+          <Reveal className="about-body"><p>I’m a BBA student at NMIMS, ASMSOC, and a founder who learns by building. From launching an e-commerce store to growing a Web3 agency and now co-founding Nyrox, I’ve taken ideas from the first conversation to the final delivery.</p><p>My work brings together sales, content, and operations. I care about thoughtful decisions, strong relationships, and following through.</p><a className="quiet-link" href="https://www.linkedin.com/in/shayaannakhwa" target="_blank" rel="noreferrer">More on LinkedIn <ArrowUpRight size={16}/></a></Reveal>
+        </div>
+      </section>
+      <section id="ventures" className="section container">
+        <Reveal className="section-heading"><div><p className="eyebrow">02 / SELECTED VENTURES</p><h2>Built from the ground up.</h2></div><span className="small-label">2023 — PRESENT</span></Reveal>
+        <div>{ventures.map((item, index) => <Venture key={item.name} item={item} index={index}/>)}</div>
+      </section>
+      <section id="experience" className="section container experience">
+        <Reveal className="experience-heading"><p className="eyebrow">03 / EXPERIENCE</p><h2>Learning<br/>by doing.</h2><a className="quiet-link" href="/Shayaan_Nakhwa_Resume.pdf" download>Full résumé <Download size={16}/></a></Reveal>
+        <div className="timeline">{experience.map(([date, role, company, description]) => <Reveal className="timeline-row" key={company}><div className="timeline-top"><span className="small-label">{date}</span><span>{company}</span></div><h3>{role}</h3><p>{description}</p></Reveal>)}<Reveal className="education"><span className="small-label">EDUCATION</span><p>BBA · NMIMS, ASMSOC <span>Class of 2027</span></p></Reveal></div>
+      </section>
+      <section id="contact" className="section container contact">
+        <Reveal><p className="eyebrow">04 / GET IN TOUCH</p></Reveal>
+        <ScrollReveal baseRotation={0} baseOpacity={.3} blurStrength={3} wordAnimationEnd="bottom 85%" textClassName="contact-title">Let’s build something that matters.</ScrollReveal>
+        <Reveal><a className="contact-email" href="mailto:shayaan.nakhwa9@gmail.com">shayaan.nakhwa9@gmail.com <ArrowUpRight size={24}/></a><div className="contact-links"><a href="https://www.linkedin.com/in/shayaannakhwa" target="_blank" rel="noreferrer">LinkedIn <ArrowUpRight size={15}/></a><a href="tel:+919136598643">+91 91365 98643 <ArrowUpRight size={15}/></a></div></Reveal>
+      </section>
+    </main>
+    <footer className="container"><span>© {new Date().getFullYear()} Shayaan Nakhwa</span><a href="#home">Back to top ↑</a></footer>
+  </MotionConfig>;
+}
+createRoot(document.getElementById('root')).render(<React.StrictMode><App/></React.StrictMode>);
