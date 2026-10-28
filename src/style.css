@@ -28,3 +28,4 @@
 @media(max-width:700px){.hero{min-height:100svh}.experience .section-heading{flex-direction:column;gap:8px}.experience .section-heading>.quiet-link{position:static}.connect-dialog{padding:28px 24px}}
 @media(hover:none),(pointer:coarse){.motion-cursor{display:none}}
 
+.connect-dialog>div{position:relative}
