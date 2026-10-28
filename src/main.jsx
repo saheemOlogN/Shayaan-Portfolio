@@ -8,6 +8,7 @@ import VariableProximity from './components/VariableProximity';
 import ScrollReveal from './components/ScrollReveal';
 const PatternWaves = lazy(() => import('./components/PatternWaves'));
 import AnimatedList from './components/AnimatedList';
+import { MotionCursor, ConnectForm } from './components/ConnectForm';
 import portrait from '../image.png';
 import './style.css';
 
@@ -57,6 +58,8 @@ function Ventures() {
   </div>;
 }
 function App() {
+  const dialogRef = useRef(null);
+  const [connectOpen, setConnectOpen] = useState(false);
   const heroRef = useRef(null), [menu, setMenu] = useState(false), [active, setActive] = useState('');
   const reduced = useReducedMotion();
   useEffect(() => {
@@ -70,7 +73,7 @@ function App() {
     return () => window.removeEventListener('keydown', close);
   }, []);
   return <MotionConfig reducedMotion="user">
-    <a className="skip" href="#main">Skip to content</a>
+    <MotionCursor target={connectOpen ? dialogRef.current : null}/><ConnectForm open={connectOpen} onClose={() => setConnectOpen(false)} dialogRef={dialogRef}/><a className="skip" href="#main">Skip to content</a>
     <GradualBlur target="page" position="top" height="7rem" strength={.7} layers={5} tint="#000" zIndex={20}/>
     <header className="nav glass">
       <a className="wordmark" href="#home" aria-label="Shayaan home" onClick={() => setMenu(false)}>shayaan<span>.</span></a>
@@ -88,7 +91,7 @@ function App() {
           <div className="hero-actions"><a className="button" href="#ventures">Selected ventures <ArrowUpRight size={18}/></a><a className="quiet-link" href="/Shayaan_Nakhwa_Resume.pdf" download>Résumé <Download size={16}/></a></div>
         </Reveal>
         <Reveal className="hero-portrait" delay={.15}>
-          <ProfileCard avatarUrl={portrait} name="Shayaan Nakhwa" title="Entrepreneur & operator" handle="" status="Mumbai, India" statusColor="#c9c9c9" contactText="Connect" onContactClick={() => { window.location.hash = 'contact'; }} backdropColor="#171717" holo={0} glare={.16} tiltStrength={5} parallax={2} intro={false} enableTilt={!reduced} radius={14}/>
+          <ProfileCard avatarUrl={portrait} name="Shayaan Nakhwa" title="Entrepreneur & operator" handle="" status="Mumbai, India" statusColor="#c9c9c9" contactText="Connect" onContactClick={() => setConnectOpen(true)} backdropColor="#171717" holo={0} glare={.16} tiltStrength={5} parallax={2} intro={false} enableTilt={!reduced} radius={14}/>
         </Reveal>
       </section></div>
 
@@ -118,4 +121,5 @@ function App() {
   </MotionConfig>;
 }
 createRoot(document.getElementById('root')).render(<React.StrictMode><App/></React.StrictMode>);
+
 

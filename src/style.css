@@ -2,3 +2,29 @@
 @media(max-width:950px){.hero{column-gap:4%;grid-template-columns:1.2fr 1fr}.hero h1{font-size:74px}.hero-portrait{width:290px}.hero-description{font-size:16px}.hero-actions{gap:18px}.button{font-size:12px}.venture-list .animated-list__item{padding:25px;gap:20px}.venture-result{min-width:115px}}
 @media(max-width:700px){html{scroll-padding-top:100px}.nav{top:16px;height:58px;padding-left:20px;padding-right:10px}.wordmark{font-size:22px}.nav-contact{margin-left:auto;padding:10px 13px;font-size:12px;gap:9px}.menu-toggle{display:flex;padding:10px;margin-left:5px}.nav-links{display:none;position:absolute;top:67px;left:0;right:0;background:#131313f5;border:1px solid #ffffff25;border-radius:22px;padding:16px;backdrop-filter:blur(25px)}.nav-links.open{display:flex;flex-direction:column;gap:0}.nav-links a{padding:14px;font-size:16px}.hero{padding-block:135px 50px;grid-template-columns:1fr;gap:46px}.hero h1{font-size:clamp(62px,13vw,88px)}.hero-description{font-size:16px}.hero-actions{gap:24px;margin-top:27px}.button{font-size:13px;gap:16px}.hero-portrait{justify-self:center;width:310px}.section{padding-block:48px}.section h2{margin-bottom:24px}.section-heading h2{margin-bottom:0}.statement{font-size:25px}.about-body{margin-top:22px}.about-body p{font-size:15px}.section-heading{margin-bottom:23px}.venture-list .animated-list__item{display:grid;grid-template-columns:1fr 22px;gap:17px;padding:24px 22px}.venture-title{font-size:24px}.venture-description{font-size:14px}.venture-result{grid-row:2;grid-column:1;text-align:left;font-size:23px;min-width:0}.venture-result>span{display:inline;margin-left:9px;font-size:12px}.venture-arrow{grid-column:2;grid-row:1}.venture-detail{margin:20px 10px 0;min-height:190px}.venture-detail h3 span{display:block;margin-left:0}.venture-detail p{font-size:14px}.experience .section-heading{margin-bottom:32px}.section-heading .quiet-link{font-size:13px}.timeline{margin-left:6px}.timeline ol{padding-left:29px}.timeline-dot{left:-34px}.timeline-top{flex-direction:column;gap:7px}.timeline-top h3{font-size:23px}.timeline-top>span{font-size:13px}.timeline-row p{font-size:14px}.timeline-row h4{font-size:16px}.education{margin-left:35px}.education p span{display:block;margin:8px 0 0}.contact-title{font-size:26px}.contact-email{font-size:clamp(15px,4.2vw,24px);gap:10px}.contact-links{gap:23px;flex-wrap:wrap}.contact-links a{font-size:13px}footer{font-size:11px;gap:20px}.desktop{display:none}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* Centered editorial sections and a complete first-screen introduction. */
+.hero{min-height:100svh}
+.section>div>h2,.section-heading h2{text-align:center}
+.section-heading{justify-content:center;position:relative}
+.experience .section-heading>.quiet-link{position:absolute;right:0}
+.about,.contact{text-align:center}
+.about-content,.about-body,.contact-title{margin-inline:auto}
+.contact-links{justify-content:center}
+.education{text-align:center;margin-left:0}
+.motion-cursor{position:fixed;z-index:2147483647;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:#fff;mix-blend-mode:difference;pointer-events:none}
+@media(hover:hover) and (pointer:fine){html.motion-cursor-active,html.motion-cursor-active *{cursor:none!important}}
+.connect-dialog{position:fixed;width:min(440px,calc(100% - 32px));max-height:calc(100svh - 40px);overflow-y:auto;margin:auto;padding:32px;border:1px solid #ffffff26;border-radius:26px;background:#171719;color:#f5f5f7;box-shadow:0 30px 100px #0009}
+.connect-dialog::backdrop{background:#0009;backdrop-filter:blur(12px)}
+.connect-dialog h2{text-align:center;font-size:28px;margin:10px 0 15px}
+.connect-dialog>div>p{text-align:center;font-size:15px;margin-bottom:24px}
+.dialog-close{position:absolute;top:-17px;right:-17px;width:34px;height:34px;display:grid;place-items:center;border-radius:50%;background:#ffffff0c}
+.connect-dialog form{display:flex;flex-direction:column}
+.connect-dialog label{font-size:14px;margin-bottom:9px}
+.connect-dialog input,.connect-dialog textarea{font:inherit;font-size:16px;color:#fff;background:#242427;border:1px solid #ffffff18;border-radius:12px;padding:13px 14px;margin-bottom:20px;width:100%;resize:vertical}
+.connect-dialog input:focus-visible,.connect-dialog textarea:focus-visible{outline:2px solid #c8c8ce;outline-offset:2px}
+.connect-dialog .form-note{font-size:13px;line-height:1.6;margin:0 0 20px}
+.whatsapp-button{justify-content:center;width:100%}
+@media(max-width:700px){.hero{min-height:100svh}.experience .section-heading{flex-direction:column;gap:8px}.experience .section-heading>.quiet-link{position:static}.connect-dialog{padding:28px 24px}}
+@media(hover:none),(pointer:coarse){.motion-cursor{display:none}}
+
